@@ -65,6 +65,7 @@ def main(argv):
             print("\t--stitch - produces a single image file with all tiles")
             print ("\t--light <day|night|nether|end|gamma>")
             print ("\t--bedrock - use bedrock edition biome colors")
+            print("\t--mode <terrain|height|light|biome>")
             print("\n")
             sys.exit()
         elif opt in ("-x"):
@@ -131,10 +132,13 @@ def main(argv):
     print(bounds_x,bounds_z)
     atlas = None
     light_atlas = None
+    biome_atlas = None
     if mode == "terrain":
         atlas = atlas_gen.get_atlas(bedrock)
+    if mode in ("terrain","light"):
         light_atlas = atlas_gen.get_light_atlas(time_of_day)
-    biome_atlas = atlas_gen.get_biome_atlas()
+    if mode in ("terrain","biome"):
+        biome_atlas = atlas_gen.get_biome_atlas()
     
     print("bounds is",bounds_x,bounds_z)
     if render_all:
