@@ -10,5 +10,5 @@ As of now it supports most but not all blockstates (namely waterlogged blocks). 
 
 Copy the 1.16 Minecraft `.jar` assets directory into the root folder of FoxelMap and copy the VoxelMap cache files of the world and dimension you wish to render into the `world/` folder.
 
-To render the center regions of the world do `python foxelmap.py -x "-1,0" -z "-1,0 --stitch"`, the output should then appear in `out/`!
+To render the center regions of the world do `python foxelmap.py -x "-1,0" -z "-1,0" --stitch`, the output should then appear in `out/`!
 
