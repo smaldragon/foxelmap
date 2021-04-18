@@ -16,15 +16,15 @@ def render_tile_landmass():
 
     darkness = 0
 
-    #data_b = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
+    #data_b = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
     #Image.fromarray(data_b*100).save("wow.png")
     
     lay = 0
-    data_h = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
-    data_ih = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
-    data_il = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*2 + lay * 256*256*4).reshape(256,256)
+    data_h = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
+    data_ih = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
+    data_il = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*2 + lay * 256*256*4).reshape(256,256)
     data_i = 256*data_ih + data_il
-        #data_l = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*3 + lay * 256*256*4).reshape(256,256)   We wont need light level
+        #data_l = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*3 + lay * 256*256*4).reshape(256,256)   We wont need light level
         #data_ls = data_l & 240
         #data_lb = (data_l & 15) << 4
 
@@ -45,13 +45,13 @@ def render_tile_landmass():
 #render_tile_landmass()
 
 def render_biome(biome_atlas):
-    data_b = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
+    data_b = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
     #img_b = np.zeros((256,256,4),np.uint8)
     img_b = (biome_atlas[4][data_b] * 255 ).astype(np.uint8)
     return Image.fromarray(img_b)
 
 def render_height():
-    data_h = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*0).reshape(256,256)
+    data_h = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0).reshape(256,256)
     return Image.fromarray(data_h)
 
 def render_tile(atlas,light_atlas,biome_atlas,mode):
@@ -73,12 +73,12 @@ def render_tile(atlas,light_atlas,biome_atlas,mode):
         #Image.fromarray(data_b*100).save("wow.png")
         
         for lay in range(4):
-            data_h = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
+            data_h = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
             #data_h = np.where(data_h == 0, 255, data_h)
-            data_ih = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
-            data_il = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*2 + lay * 256*256*4).reshape(256,256)
+            data_ih = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
+            data_il = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*2 + lay * 256*256*4).reshape(256,256)
             data_i = 256*data_ih + data_il
-            data_l = np.fromfile("data",dtype='uint8',count=256*256,offset=256*256*3 + lay * 256*256*4).reshape(256,256)
+            data_l = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*3 + lay * 256*256*4).reshape(256,256)
             data_ls = (data_l & 240) >> 4
             data_lb = (data_l & 15)
 

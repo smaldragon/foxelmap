@@ -1,6 +1,6 @@
 import numpy as np
 def keys_to_atlas_color(atlas):
-    file = open("key",'r')
+    file = open("temp/key",'r')
     keys = file.readlines()
     file.close
 

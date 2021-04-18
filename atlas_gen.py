@@ -3,7 +3,6 @@ import os
 import json
 
 import numpy as np
-import biomes
 
 water_tint    = (63/255, 118/255, 228/255,1.0) #3F76E4
 grass_tint    = (0.0, 0.0, 0.0,1.0) #91BD59
@@ -16,8 +15,6 @@ def get_biome_atlas():
 
 
 tints = get_biome_atlas()
-
-#tints = biomes.get_tints()
 
 
 def get_model_color(blockname,be = False,variation=""):
