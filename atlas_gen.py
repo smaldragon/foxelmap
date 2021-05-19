@@ -49,7 +49,7 @@ def get_model_color(blockname,be = False,variation=""):
 
     if blockname[6:] in ["grass_block","grass","tall_grass","sugarcane","fern","large_fern","tall_grass_top","tall_grass_bottom","large_fern_top","large_fern_bottom"]:
         pixels = (pixels * tints[0]).astype(np.uint8)
-    if blockname[6:]  in ["oak_leaves","acacia_leaves","dark_oak_leaves","vines"]:
+    if blockname[6:]  in ["oak_leaves","acacia_leaves","dark_oak_leaves","vines","jungle_leaves"]:
         pixels = (pixels * tints[1]).astype(np.uint8)
     if blockname[6:]  == "water":
         if be:
