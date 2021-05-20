@@ -6,9 +6,10 @@ import atlas_gen
 import stitch
 import os
 import math
+import merger
 
 try:
-    os.makedirs('out')
+    os.makedirs('out/z0')
 except:
     pass
 
@@ -43,12 +44,13 @@ def main(argv):
     render_all = False
     stitch_tiles = False
     mode = "terrain"
-    world = "world"
+    world = ["world"]
     time_of_day = "day"
     bedrock = False
+    zoom = 0
 
     try: 
-        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz="])
+        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom="])
     except getopt.GetoptError:
         print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
         sys.exit(2)
@@ -66,6 +68,7 @@ def main(argv):
             print ("\t--light <day|night|nether|end|gamma>")
             print ("\t--bedrock - use bedrock edition biome colors")
             print("\t--mode <terrain|height|light|biome>")
+            print("\t--zoom z")
             print("\n")
             sys.exit()
         elif opt in ("-x"):
@@ -98,7 +101,7 @@ def main(argv):
             if arg in ("terrain","land","biome","light","height","none"):
                 mode = arg
         elif opt in ("-w","--world"):
-            world = arg
+            world = arg.split(",")
         elif opt in ("--light"):
             time_of_day = arg
         elif opt in ("-c"):
@@ -121,10 +124,14 @@ def main(argv):
             bounds_z.sort()
         elif opt in ("--bedrock"):
             bedrock = True
+        elif opt in ("--zoom"):
+            zoom = int(arg)
 
-    if (bounds_x == None or bounds_z == None) and render_all == False:
-        print("ERROR: Invalid Map Bounds")
-        sys.exit(1)
+    print(world)
+
+    #if (bounds_x == None or bounds_z == None) and render_all == False:
+    #    print("ERROR: Invalid Map Bounds")
+    #    sys.exit(1)
     if (world == ""):
         print("ERROR: No World Provided")
         sys.exit(1)
@@ -139,20 +146,39 @@ def main(argv):
         light_atlas = atlas_gen.get_light_atlas(time_of_day)
     if mode in ("terrain","biome"):
         biome_atlas = atlas_gen.get_biome_atlas()
-    
-    print("bounds is",bounds_x,bounds_z)
-    if render_all:
-        if mode != "none":
-            numpy_render.make_all_tiles(world,atlas,light_atlas,biome_atlas,mode)
-    else:
-        for x in range(bounds_x[0],bounds_x[1]+1):
-            for y in range(bounds_z[0],bounds_z[1]+1):
-                if mode != "none":
-                    numpy_render.make_tile(world,atlas,light_atlas,biome_atlas,x,y,mode)
-        if stitch_tiles:
-            print("stitching")
-            stitch.stitch(bounds_x[0],bounds_x[1],bounds_z[0],bounds_z[1])
 
+    print("bounds is",bounds_x,bounds_z)
+    for w in world:
+        print("printing tiles for {}".format(w))
+        if len(world) == 1:
+            out = ""
+        else:
+            out = "{}/".format(w)
+            try:
+                #print(out)
+                os.makedirs("out/"+out+"/z0/")
+            except:
+                pass
+        if bounds_x != None and bounds_z != None:
+            for x in range(bounds_x[0],bounds_x[1]+1):
+                for y in range(bounds_z[0],bounds_z[1]+1):
+                    if mode != "none":
+                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,x,y,mode,out)
+        if render_all:
+            if mode != "none":
+                numpy_render.make_all_tiles(w,atlas,light_atlas,biome_atlas,mode,out)
+    if len(world) > 1:
+        # do merge code here
+        merger.merge(world)
+    if zoom > 0:
+        stitch.zoom_stitch(zoom)
+        pass
+    if stitch_tiles:
+        print("stitching")
+        stitch.stitch(zoom)
+
+    
+    
     print("Done!")
 
 if __name__ == "__main__":

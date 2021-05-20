@@ -159,37 +159,37 @@ with ZipFile(voxeldirectory+"-25,13.zip",'r') as zip:
 '''
 
 
-def make_tile(world,atlas,light_atlas,biome_atlas,x,y,mode):
+def make_tile(world,atlas,light_atlas,biome_atlas,x,y,mode,out):
     voxeldirectory = "{}".format(world)
     
     try:
         with ZipFile("{}/{},{}.zip".format(voxeldirectory,x,y),'r') as zip:
             zip.extractall("temp/")
-        print("{},{}.zip".format(x,y))
-        render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{},{}.png".format(x,y))
-        print("out/{},{}.png".format(x,y))
+        #print("{},{}.zip".format(x,y))
+        render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{}z0/{},{}.png".format(out,x,y))
+        #print("out/z0/{},{}.png".format(x,y))
     except Exception as e:
         print(e)
-        #Image.new(mode ="RGBA",size =(256,256),color=(0,0,0,0)).save("out/{},{}.png".format(x,y))
+        #Image.new(mode ="RGBA",size =(256,256),color=(0,0,0,0)).save("out/z0/{},{}.png".format(x,y))
     return
     '''
     with ZipFile("{}/{},{}.zip".format(voxeldirectory,x,y),'r') as zip:
         zip.extractall()
     print("{},{}.zip".format(x,y))
-    render_tile(atlas).save("out/{},{}.png".format(x,y))
-    print("out/{},{}.png".format(x,y))
+    render_tile(atlas).save("out/z0/{},{}.png".format(x,y))
+    print("out/z0/{},{}.png".format(x,y))
     return
     '''
     
-def make_all_tiles(world,atlas,light_atlas,biome_atlas,mode):
+def make_all_tiles(world,atlas,light_atlas,biome_atlas,mode,out):
     voxeldirectory = "{}".format(world)
     for voxelfile in os.listdir(voxeldirectory):
-        print(voxelfile)
+        #print(voxelfile)
         if voxelfile.endswith(".zip"):
             with ZipFile("{}/{}".format(voxeldirectory,voxelfile),'r') as zip:
                 zip.extractall("temp/")
 
-        render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{}.png".format(voxelfile[:-4]))
+        render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{}z0/{}.png".format(out,voxelfile[:-4]))
 '''
     for voxelfile in os.listdir(voxeldirectory):
         print(voxelfile)
