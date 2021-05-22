@@ -3,6 +3,8 @@ import numpy as np
 from zipfile import ZipFile
 import os
 
+from numpy.core.arrayprint import array_str
+
 #import atlas_gen
 
 #import atlas_gen_2
@@ -11,38 +13,36 @@ import read_key
 #atlas = atlas_gen_2.get_atlas()
 
 def render_land():
+    land_color = [184, 184, 184,255]
+    water_color = [254, 254, 254,255]
+
     water = read_key.keys_to_water_id()
     layers = []
 
     darkness = 0
-
-    #data_b = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
-    #Image.fromarray(data_b*100).save("wow.png")
     
     lay = 0
     data_h = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
     data_ih = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
     data_il = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*2 + lay * 256*256*4).reshape(256,256)
     data_i = 256*data_ih + data_il
-        #data_l = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*3 + lay * 256*256*4).reshape(256,256)   We wont need light level
-        #data_ls = data_l & 240
-        #data_lb = (data_l & 15) << 4
 
     data_sealevel = np.zeros((256,256))
     data_sealevel[:,:] = np.where(data_h[:,:] == 64,1,0)
     data_water     = np.where(data_i == water, 1,0)
     data_seawater = ((data_sealevel * data_water) - 1 ) * -1
-    #data_biome = np.isin(data_b,[0,16,7,11]).astype(np.uint8)
-
-    #data_terrain = ((data_biome * data_seawater))
+    data_void     = np.where(data_i == 0, 1,0)
+    land_map = np.zeros([256,256,4],dtype=np.uint8)
     
-    #Image.fromarray((data_sealevel*200).astype(np.uint8)).save("sealevel.png")
-    #Image.fromarray((data_water*200).astype(np.uint8)).save("water.png")
-    return Image.fromarray((data_seawater*200).astype(np.uint8))
-    #Image.fromarray((data_biome*200).astype(np.uint8)).save("biomes.png")
-    #Image.fromarray((data_terrain*200).astype(np.uint8)).save("land_pog.png")
+    for x in range(256):
+        for z in range(256):
+            if data_void[x,z] == 0:
+                if data_seawater[x,z] == 0:
+                    land_map[x,z] = land_color
+                else:
+                    land_map[x,z] = water_color
 
-#render_tile_landmass()
+    return Image.fromarray(land_map,"RGBA")
 
 def render_biome(biome_atlas):
     data_b = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*17).reshape(256,256)
@@ -160,14 +160,13 @@ with ZipFile(voxeldirectory+"-25,13.zip",'r') as zip:
 
 
 def make_tile(world,atlas,light_atlas,biome_atlas,x,y,mode,out):
-    voxeldirectory = "{}".format(world)
-    
+    voxeldirectory = "{}".format(world)    
     try:
         with ZipFile("{}/{},{}.zip".format(voxeldirectory,x,y),'r') as zip:
             zip.extractall("temp/")
-        #print("{},{}.zip".format(x,y))
+        
         render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{}z0/{},{}.png".format(out,x,y))
-        #print("out/z0/{},{}.png".format(x,y))
+        print("out/z0/{},{}.png".format(x,y))
     except Exception as e:
         print(e)
         #Image.new(mode ="RGBA",size =(256,256),color=(0,0,0,0)).save("out/z0/{},{}.png".format(x,y))
@@ -182,9 +181,13 @@ def make_tile(world,atlas,light_atlas,biome_atlas,x,y,mode,out):
     '''
     
 def make_all_tiles(world,atlas,light_atlas,biome_atlas,mode,out):
+    
     voxeldirectory = "{}".format(world)
+    with ZipFile("{}/-18,13.zip".format(voxeldirectory),'r') as zip:
+        zip.extractall("temp/")
+
     for voxelfile in os.listdir(voxeldirectory):
-        #print(voxelfile)
+        print(voxeldirectory)
         if voxelfile.endswith(".zip"):
             with ZipFile("{}/{}".format(voxeldirectory,voxelfile),'r') as zip:
                 zip.extractall("temp/")

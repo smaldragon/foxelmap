@@ -38,7 +38,7 @@ def stitch(zoom):
 
     print(s_x,s_z)
 
-    map_img = Image.new(mode="RGB", size = (s_x,s_z), color = (0,0,0))
+    map_img = Image.new(mode="RGBA", size = (s_x,s_z), color = (0,0,0,0))
 
     print("Stitching Together a {}x{} Image".format(s_x,s_z))
 

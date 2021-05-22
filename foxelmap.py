@@ -20,8 +20,6 @@ except:
 
 # Issues:
 # Block states are partially supported (no waterlogging)
-# Fix stitching in -all mode (currently crashes)
-# Fix region selection to not suck
 
 # Not pixel accurate to real Voxel Map (unsure if it ever will be) [very close now]
 # Biome tints are currently hard-coded (using values from minecraft wiki)
@@ -33,10 +31,6 @@ except:
 # Only supports/tested with the overworld dimension
 # Add better help/documentation lol
 # Send a single variable for atlases and modes
-# Add terrain mode
-# Add biome mode (mostly)
-# Add light mode
-# Add height mode
 
 def main(argv):
     bounds_x = None
