@@ -1,3 +1,9 @@
+# Foxelmap specific
+assets/
+out/
+world/
+temp/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

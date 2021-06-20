@@ -51,15 +51,32 @@ def render_biome(biome_atlas):
     return Image.fromarray(img_b)
 
 def render_height():
-    data_h = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0).reshape(256,256)
-    return Image.fromarray(data_h)
+    water = read_key.keys_to_water_id()
+
+    data_h =   np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0).reshape(256,256)
+    data_h_w = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + 256*256*4).reshape(256,256)
+
+    data_ih = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*1).reshape(256,256)
+    data_il = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*2).reshape(256,256)
+    data_i = 256*data_ih + data_il
+
+    
+    data_void = np.where(data_i == 0, 0,1)
+    data_water = np.where(data_i == water, 0, 1).astype(np.uint8)
+
+    zero_channel = np.zeros_like(data_h)
+    height_map = np.stack([data_h*data_water, data_h*data_water, data_h*data_water,((data_void*255) * data_water).astype(np.uint8)], axis=2)
+    height_map_w = np.stack([data_h_w*(data_water==0), data_h_w*(data_water==0), data_h_w*(data_water==0),((data_void*255) * (data_water==0)).astype(np.uint8)], axis=2)
+
+    
+    return Image.fromarray(height_map_w+height_map)
 
 def render_light():
     data_l = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*3).reshape(256,256)
     data_l = (data_l & 15) << 4
     return Image.fromarray(data_l)
 
-def render_terrain(atlas,light_atlas,biome_atlas):
+def render_terrain(atlas,light_atlas,biome_atlas,render_layer=None):
     #light_atlas = atlas_gen_3.get_light_atlas() # this shouldnt be called in this script ?
 
     color_map,water = read_key.keys_to_atlas_color(atlas)
@@ -131,10 +148,15 @@ def render_terrain(atlas,light_atlas,biome_atlas):
     layers[1][:,:,3] = np.where(layers[0][:,:,3] > 0, 255, layers[1][:,:,3])
     
     out_render = Image.new("RGBA",(256,256))
-    out_render = Image.fromarray(layers[1])
-    out_render = Image.alpha_composite(out_render,Image.fromarray(layers[0]))
-    out_render = Image.alpha_composite(out_render,Image.fromarray(layers[2]))
-    out_render = Image.alpha_composite(out_render,Image.fromarray(layers[3]))
+    #render_layer = 1
+    if render_layer == 1 or render_layer == None:
+        out_render = Image.fromarray(layers[1])
+    if render_layer == 0 or render_layer == None:
+        out_render = Image.alpha_composite(out_render,Image.fromarray(layers[0]))
+    if render_layer == 2 or render_layer == None:
+        out_render = Image.alpha_composite(out_render,Image.fromarray(layers[2]))
+    if render_layer == 3 or render_layer == None:
+        out_render = Image.alpha_composite(out_render,Image.fromarray(layers[3]))
     return out_render
 
 def render_tile(atlas,light_atlas,biome_atlas,mode):
