@@ -29,7 +29,7 @@ except:
 # Block slopes breaks across region edges
 # Different toggles for terrain/slope/water not yet avaliable
 # Only supports/tested with the overworld dimension
-# Add better help/documentation lol
+# Add better help/documentation
 # Send a single variable for atlases and modes
 
 def main(argv):
@@ -157,10 +157,13 @@ def main(argv):
             for x in range(bounds_x[0],bounds_x[1]+1):
                 for y in range(bounds_z[0],bounds_z[1]+1):
                     if mode != "none":
-                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,x,y,mode,out)
+                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,"{},{}.zip".format(x,y),mode,out)
         if render_all:
             if mode != "none":
-                numpy_render.make_all_tiles(w,atlas,light_atlas,biome_atlas,mode,out)
+                for voxelfile in os.listdir(w):
+                    if voxelfile.endswith('.zip'):
+                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,voxelfile,mode,out)
+                #numpy_render.make_all_tiles(w,atlas,light_atlas,biome_atlas,mode,out)
     if len(world) > 1:
         # do merge code here
         merger.merge(world)
