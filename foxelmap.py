@@ -45,26 +45,32 @@ def main(argv):
     zoom = 0
 
     try: 
-        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice="])
+        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",
+            ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer="]
+        )
     except getopt.GetoptError:
         print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
         sys.exit(2)
     for opt,arg in opts:
         if opt in ('-h','--help'):
             print ("FoxelMap Renderer")
-            print (".\\foxelmap.py -x \"-1,1\" -z \"-1,1\"\n")
-            print("\t--mode <terrain|height|light|biome>")
+            print (".\\foxelmap.py -x \"-1,1\" -z \"-1,1\"")
+            print("")
             print("\t-a --all - renders all tiles")
             print("\t-x \"x1,x2\" - region x")
             print("\t-z \"z1,z2\" - region z")
             print("\t-c \"x,z\" - tile at x,z ingame coords")
             print("\t--cx \"x1,x2\" - tiles from x1 to x2 ingame coords")
             print("\t--cz \"z1,z2\" - tiles from z1 to z2 ingame coords")
-            print("\t--stitch - produces a single image file with all tiles")
+            print("")
+            print("\t--mode <terrain|height|light|biome>")
             print("\t--light <day|night|nether|end|gamma>")
             print("\t--bedrock - use bedrock edition biome colors")
             print("\t--heightslice <slice> - thickness of layers in height mode")
+            print("\t--layer <layer> | choose a single voxelmap layer to render")
+            print("")
             print("\t--zoom z")
+            print("\t--stitch - produces a single image file with all tiles")
             print("\n")
             sys.exit()
         elif opt in ("-x"):
@@ -124,6 +130,8 @@ def main(argv):
             zoom = int(arg)
         elif opt in ("--heightslice"):
             config['cut'] = int(arg)
+        elif opt in ('--layer'):
+            config['render_layer'] = int(arg)
 
     print(world)
 

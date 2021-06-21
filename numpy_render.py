@@ -66,7 +66,14 @@ def render_biome(biome_atlas):
     img_b = (biome_atlas[4][data_b] * 255 ).astype(np.uint8)
     return Image.fromarray(img_b)
 
-def render_height(cut=0):
+def render_height(config):
+    cut=0
+    if 'cut' in config:
+        cut = config['cut']
+    render_layer=None
+    if 'render_layer' in config:
+        render_layer = config['render_layer']
+
     water = read_key.keys_to_water_id()
 
     data_h = cache_height(0)
@@ -84,14 +91,23 @@ def render_height(cut=0):
     height_map = np.stack([data_h*data_water, data_h*data_water, data_h*data_water,((data_void*255) * data_water).astype(np.uint8)], axis=2)
     height_map_w = np.stack([data_h_w*(data_water==0), data_h_w*(data_water==0), data_h_w*(data_water==0),((data_void*255) * (data_water==0)).astype(np.uint8)], axis=2)
 
-    
-    return Image.fromarray(height_map_w+height_map)
+    if render_layer == 0:
+        return Image.fromarray(height_map)
+    elif render_layer == 1:
+        return Image.fromarray(height_map_w)
+    else:
+        return Image.fromarray(height_map_w+height_map)
 
 def render_light():
     data_l,data_ls,data_lb = cache_light(0)    
     return Image.fromarray(data_lb*16)
 
-def render_terrain(atlas,light_atlas,biome_atlas,render_layer=None):
+def render_terrain(atlas,light_atlas,biome_atlas,config):
+    render_layer=None
+    if 'render_layer' in config:
+        render_layer = config['render_layer']
+
+
     color_map,water = read_key.keys_to_atlas_color(atlas)
     layers = []
 
@@ -153,13 +169,13 @@ def render_tile(atlas,light_atlas,biome_atlas,mode,config={}):
     if mode == "biome":
         return render_biome(biome_atlas)
     if mode == "height":
-        return render_height(config['cut'])
+        return render_height(config)
     if mode == "light":
         return render_light()
     if mode == "land":
         return render_land()
     else:
-        return render_terrain(atlas,light_atlas,biome_atlas)
+        return render_terrain(atlas,light_atlas,biome_atlas,config)
 
 def make_tile(world,atlas,light_atlas,biome_atlas,voxelfile,mode,out,config={}):
     print(voxelfile)
