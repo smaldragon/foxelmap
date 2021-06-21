@@ -17,3 +17,7 @@ To render the center regions of the world do `python foxelmap.py -x "-1,0" -z "-
 * **Biome** - Biome colors using Amidst colors
 * **Light** - Block Light of the main layer
 * **Height** - Simple grayscale heightmap
+* **Land** - Blank land and Water map
+
+### Settings
+* **Layer** - Ouput a single voxelmap layer
