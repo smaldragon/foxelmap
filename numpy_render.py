@@ -66,11 +66,15 @@ def render_biome(biome_atlas):
     img_b = (biome_atlas[4][data_b] * 255 ).astype(np.uint8)
     return Image.fromarray(img_b)
 
-def render_height():
+def render_height(cut=0):
     water = read_key.keys_to_water_id()
 
     data_h = cache_height(0)
     data_h_w = cache_height(1)
+
+    data_h -= data_h % cut
+    data_h_w -= data_h_w % cut
+
     data_i = cache_blockid(0)    
     data_void = np.where(data_i == 0, 0,1)
 
@@ -144,12 +148,12 @@ def render_terrain(atlas,light_atlas,biome_atlas,render_layer=None):
 #   Find and uncompress tiles
 # ---------------
 
-def render_tile(atlas,light_atlas,biome_atlas,mode):
+def render_tile(atlas,light_atlas,biome_atlas,mode,config={}):
 
     if mode == "biome":
         return render_biome(biome_atlas)
     if mode == "height":
-        return render_height()
+        return render_height(config['cut'])
     if mode == "light":
         return render_light()
     if mode == "land":
@@ -157,13 +161,13 @@ def render_tile(atlas,light_atlas,biome_atlas,mode):
     else:
         return render_terrain(atlas,light_atlas,biome_atlas)
 
-def make_tile(world,atlas,light_atlas,biome_atlas,voxelfile,mode,out):
+def make_tile(world,atlas,light_atlas,biome_atlas,voxelfile,mode,out,config={}):
     print(voxelfile)
     voxeldirectory = "{}".format(world)
     try:
         with ZipFile("{}/{}".format(voxeldirectory,voxelfile),'r') as zip:
             zip.extractall("temp/")
-        render_tile(atlas,light_atlas,biome_atlas,mode).save("out/{}z0/{}.png".format(out,voxelfile[:-4]))
+        render_tile(atlas,light_atlas,biome_atlas,mode,config).save("out/{}z0/{}.png".format(out,voxelfile[:-4]))
     except Exception as e:
         print(e)
     return

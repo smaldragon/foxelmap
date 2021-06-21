@@ -16,13 +16,22 @@ def keys_to_atlas_color(atlas):
         if "[" in keys[i]:
             wuh = keys[i].split('[',1)[1].split(']')[0]
         if weh+"["+wuh+"]" in atlas:
-            color_map[i+1] = atlas[weh+"["+wuh+"]"]
+            key_color = atlas[weh+"["+wuh+"]"]
         else:
-            color_map[i+1] = atlas[weh]
-       
+            key_color = atlas[weh]
+
+        '''
+        if 'waterlogged=true' in wuh or weh in ['minecraft:seagrass','minecraft:kelp']:
+            color_map[i+1] = key_color[:256]
+        else:
+            #color_map[i+1] = atlas['minecraft:water'][256:]
+            color_map[i+1] = key_color[:256]
+        '''
+        color_map[i+1] = key_color
        #print(weh,atlas[weh][0])
         if weh == "minecraft:water" and wah == "[level=0":
             water = i + 1
+    
     return color_map,water
 
 def keys_to_water_id():

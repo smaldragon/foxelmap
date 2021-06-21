@@ -63,7 +63,19 @@ def get_model_color(blockname,be = False,variation=""):
         pixels = (pixels * (128/255, 167/255, 85/255,1.0)).astype(np.uint8)
     if blockname[6:] == "lily_pad":
         pixels = (pixels * (32/255, 128/255, 48/255,1.0)).astype(np.uint8)
-    
+
+    '''
+    # generate waterlogged_pixels (attempt)
+    if blockname[6:]  == "water":
+        pixels_w = np.append(pixels,pixels)
+    else:
+        if be:
+            pixels_w = np.append(pixels,(pixels * tints[3]).astype(np.uint8))
+        else:
+            pixels_w = np.append(pixels,(pixels * tints[2]).astype(np.uint8))
+
+    pixels = pixels_w.reshape((512,4))
+    '''
     return pixels
 
 def get_atlas(be = False):

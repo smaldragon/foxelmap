@@ -37,6 +37,7 @@ def main(argv):
     bounds_z = None
     render_all = False
     stitch_tiles = False
+    config = {}
     mode = "terrain"
     world = ["world"]
     time_of_day = "day"
@@ -44,7 +45,7 @@ def main(argv):
     zoom = 0
 
     try: 
-        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom="])
+        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice="])
     except getopt.GetoptError:
         print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
         sys.exit(2)
@@ -52,6 +53,7 @@ def main(argv):
         if opt in ('-h','--help'):
             print ("FoxelMap Renderer")
             print (".\\foxelmap.py -x \"-1,1\" -z \"-1,1\"\n")
+            print("\t--mode <terrain|height|light|biome>")
             print("\t-a --all - renders all tiles")
             print("\t-x \"x1,x2\" - region x")
             print("\t-z \"z1,z2\" - region z")
@@ -59,9 +61,9 @@ def main(argv):
             print("\t--cx \"x1,x2\" - tiles from x1 to x2 ingame coords")
             print("\t--cz \"z1,z2\" - tiles from z1 to z2 ingame coords")
             print("\t--stitch - produces a single image file with all tiles")
-            print ("\t--light <day|night|nether|end|gamma>")
-            print ("\t--bedrock - use bedrock edition biome colors")
-            print("\t--mode <terrain|height|light|biome>")
+            print("\t--light <day|night|nether|end|gamma>")
+            print("\t--bedrock - use bedrock edition biome colors")
+            print("\t--heightslice <slice> - thickness of layers in height mode")
             print("\t--zoom z")
             print("\n")
             sys.exit()
@@ -120,6 +122,8 @@ def main(argv):
             bedrock = True
         elif opt in ("--zoom"):
             zoom = int(arg)
+        elif opt in ("--heightslice"):
+            config['cut'] = int(arg)
 
     print(world)
 
@@ -157,12 +161,12 @@ def main(argv):
             for x in range(bounds_x[0],bounds_x[1]+1):
                 for y in range(bounds_z[0],bounds_z[1]+1):
                     if mode != "none":
-                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,"{},{}.zip".format(x,y),mode,out)
+                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,"{},{}.zip".format(x,y),mode,out,config)
         if render_all:
             if mode != "none":
                 for voxelfile in os.listdir(w):
                     if voxelfile.endswith('.zip'):
-                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,voxelfile,mode,out)
+                        numpy_render.make_tile(w,atlas,light_atlas,biome_atlas,voxelfile,mode,out,config)
                 #numpy_render.make_all_tiles(w,atlas,light_atlas,biome_atlas,mode,out)
     if len(world) > 1:
         # do merge code here
