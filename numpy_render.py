@@ -17,7 +17,7 @@ import read_key
 # ------------------------
 
 def cache_height(lay):
-    return np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256)
+    return np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*0 + lay * 256*256*4).reshape(256,256) - 1 # -1 to fix y=256 terrain
 
 def cache_blockid(lay):
     data_ih = np.fromfile("temp/data",dtype='uint8',count=256*256,offset=256*256*1 + lay * 256*256*4).reshape(256,256)
@@ -129,7 +129,10 @@ def render_terrain(atlas,light_atlas,biome_atlas,config):
         
         im = color_map[data_i,data_b]
         
-        h_tint = 0.9 + ((data_h)/255)*0.45
+        h_tint = 1
+        if config['y_shading'] == True:
+            h_tint = 0.9 + ((data_h)/255)*0.45
+
         l_tint = light_atlas[data_ls,data_lb]
         
         im = im.astype(float)

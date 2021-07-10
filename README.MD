@@ -46,6 +46,7 @@ Voxelmap stores its cache data in tiles each corresponding to a 256x256 area (as
 | -------------------------------------- | ------------------------------------------------------------ |
 | `--light <day/night/nether/end/gamma>` | When in `--mode terrain`, selects the light level to use for rendering |
 | `--bedrock`                            | When in `--mode terrain`, uses minecraft bedrock edition water colors |
+| `--noyshading`                         | When in `--mode terrain`, disable tinting blocks according to y level |
 | `--heightslice <value>`                | When in `--mode height` rounds the values of y coordinates to intervals of the specified value to create a layered topographic look |
 | `--layer`                              | In all modes, renders a single Voxelmap layer (0 = Surface, 1 = Underwater, 2 = Transparent Blocks, 3 = Vegetation) |
 

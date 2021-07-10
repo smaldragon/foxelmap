@@ -38,6 +38,7 @@ def main(argv):
     render_all = False
     stitch_tiles = False
     config = {}
+    config['y_shading'] = True
     mode = "terrain"
     world = ["world"]
     time_of_day = "day"
@@ -46,7 +47,7 @@ def main(argv):
 
     try: 
         opts, args = getopt.getopt(argv,"hx:z:am:w:c:",
-            ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer="]
+            ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading"]
         )
     except getopt.GetoptError:
         print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
@@ -71,6 +72,7 @@ def main(argv):
             print("\t--bedrock - use bedrock edition biome colors")
             print("\t--heightslice <slice> - thickness of layers in height mode")
             print("\t--layer <layer> | choose a single voxelmap layer to render")
+            print("\t--noyshading - disables height shading in terrain mode")
             print("")
             print("\t--zoom z")
             print("\t--stitch - produces a single image file with all tiles")
@@ -135,6 +137,8 @@ def main(argv):
             config['cut'] = int(arg)
         elif opt in ('--layer'):
             config['render_layer'] = int(arg)
+        elif opt in ('--noyshading'):
+            config['y_shading'] = False
 
     print(world)
 
