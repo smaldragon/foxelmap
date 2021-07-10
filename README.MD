@@ -12,6 +12,10 @@ Copy the 1.16 Minecraft `.jar` assets directory into the root folder of FoxelMap
 
 To render the center regions of the world do `python foxelmap.py -x "-1,0" -z "-1,0" --stitch`, the output should then appear in `out/`!
 
+### Area Selection
+
+
+
 ### Modes
 * **Terrain** - Voxelmap-like terrain output
 * **Biome** - Biome colors using Amidst colors
