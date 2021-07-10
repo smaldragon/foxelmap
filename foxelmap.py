@@ -33,6 +33,8 @@ except:
 # Send a single variable for atlases and modes
 
 def main(argv):
+    calculate_atlas = False
+    generate_atlas = False
     bounds_x = None
     bounds_z = None
     render_all = False
@@ -47,7 +49,7 @@ def main(argv):
 
     try: 
         opts, args = getopt.getopt(argv,"hx:z:am:w:c:",
-            ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading"]
+            ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading","atlas","atlasgen"]
         )
     except getopt.GetoptError:
         print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
@@ -76,6 +78,9 @@ def main(argv):
             print("")
             print("\t--zoom z")
             print("\t--stitch - produces a single image file with all tiles")
+            print("")
+            print("\t--atlas - uses the minecraft assets folder to calculate block colors")
+            print("\t--atlasgen - generates an atlas and exports it to palettes/atlas/")
             print("\n")
             sys.exit()
         elif opt in ("-x"):
@@ -99,7 +104,10 @@ def main(argv):
             if bounds_z == None: bounds_z = [0,0]
             bounds_x = [bounds_x[0] -int(arg),bounds_x[1] + int(arg)]
             bounds_z = [bounds_z[0] -int(arg),bounds_z[1] + int(arg)]
-            
+        elif opt in ("--atlas"):
+            calculate_atlas = True
+        elif opt in ("--atlasgen"):
+            generate_atlas = True
         elif opt in ("-a","--all"):
             render_all = True
         elif opt in ("--stitch"):
@@ -154,7 +162,13 @@ def main(argv):
     light_atlas = None
     biome_atlas = None
     if mode == "terrain":
-        atlas = atlas_gen.get_atlas(bedrock)
+        print(generate_atlas)
+        if generate_atlas:
+            atlas_gen.calculate_atlas()
+        if calculate_atlas:
+            atlas = atlas_gen.get_atlas(bedrock)
+        else:
+            atlas = atlas_gen.load_atlas(bedrock)
     if mode in ("terrain","light"):
         light_atlas = atlas_gen.get_light_atlas(time_of_day)
     if mode in ("terrain","biome"):
