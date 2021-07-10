@@ -183,11 +183,11 @@ def main(argv):
         # do merge code here
         merger.merge(world)
     if zoom > 0:
-        stitch.zoom_stitch(zoom)
+        stitch.zoom_stitch(zoom,render_all,bounds_x,bounds_z)
         pass
     if stitch_tiles:
         print("stitching")
-        stitch.stitch(zoom)
+        stitch.stitch(zoom,render_all,bounds_x,bounds_z)
 
     
     
