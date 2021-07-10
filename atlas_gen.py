@@ -145,3 +145,37 @@ def get_light_atlas(light):
     #print(light_atlas)
     return light_atlas
 
+def calculate_atlas():
+    print("generating atlas")
+    atlas = get_atlas()
+    atlas_b = get_atlas(True)
+
+    img_d =   np.zeros((len(atlas.keys()),256,4),np.uint8)
+    img_db = np.zeros((len(atlas.keys()),256,4),np.uint8)
+    keys = []
+    i = 0
+    for k in atlas:
+        keys.append(k)
+        img_d[i] = atlas[k]
+        img_db[i] = atlas_b[k]
+        i += 1
+    Image.fromarray(img_d).save('palettes/atlas/atlas.png')
+    Image.fromarray(img_db).save('palettes/atlas/atlas_b.png')
+    with open('palettes/atlas/key.txt','w') as f:
+        f.write('\n'.join(keys))
+
+def load_atlas(be=False,p='palettes/atlas'):
+    atlas = {}
+    if be:
+        img = Image.open('{}/atlas_b.png'.format(p))
+    else:
+        img = Image.open('{}/atlas.png'.format(p))
+    img_np = np.asarray(img)
+    keys = []
+    with open('{}/key.txt'.format(p),'r') as f:
+        keys = f.read().split('\n')
+    i = 0
+    for k in keys:
+        atlas[k] = img_np[i]
+        i+=1
+    return atlas

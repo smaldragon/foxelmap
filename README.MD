@@ -8,11 +8,11 @@ As of now it supports most but not all blockstates (namely waterlogged blocks). 
 
 ## Usage
 
-Copy the 1.16 Minecraft `.jar` assets directory into the root folder of FoxelMap and copy the VoxelMap cache files of the world and dimension you wish to render into the `world/` folder.
+Copy the VoxelMap cache `.zip` files of the world and dimension you wish to render into a new folder named `world`inside the Foxelmap directory
 
-To render the center regions of the world do `python foxelmap.py -x "-1,0" -z "-1,0" --stitch`, the output should then appear in `out/`!
+To render the center regions of your world do `python foxelmap.py --radius 3 --stitch`, the output should then appear in `out/`!
 
-Run `python foxelmap.py --help` for a list of all commands.
+Run `python foxelmap.py --help` for a list of all commands and settings or view the tables bellow.
 
 ### Area Selection
 
@@ -31,24 +31,24 @@ Voxelmap stores its cache data in tiles each corresponding to a 256x256 area (as
 
 ### Render Modes
 
-| Command          | Description                                             |
-| ---------------- | ------------------------------------------------------- |
-| `--mode terrain` | The standard Voxelmap-like look                         |
-| `--mode height`  | A grayscale map where pixel brightness = y              |
-| `--mode light`   | À grayscale map showing the block light level           |
-| `--mode land`    | A map showing the water and land boundaries             |
-| `--mode biome`   | A map of the different biomes using Amidst color values |
-| `--mode none`    | Performs no render                                      |
+| Command          | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| `--mode terrain` | The standard Voxelmap-like look                              |
+| `--mode height`  | A grayscale map where pixel brightness = y                   |
+| `--mode light`   | À grayscale map showing the block light level                |
+| `--mode land`    | A map showing the water and land boundaries                  |
+| `--mode biome`   | A map of the different biomes using Amidst color values      |
+| `--mode none`    | Performs no render. Stitch, zoom and atlas commands continue to work as usual |
 
 #### Render Settings
 
 | Command                                | Description                                                  |
 | -------------------------------------- | ------------------------------------------------------------ |
-| `--light <day/night/nether/end/gamma>` | When in `--mode terrain`, selects the light level to use for rendering |
+| `--light <day/night/nether/end/gamma>` | When in `--mode terrain`, selects the lighting to use for rendering |
 | `--bedrock`                            | When in `--mode terrain`, uses minecraft bedrock edition water colors |
-| `--noyshading`                         | When in `--mode terrain`, disable tinting blocks according to y level |
+| `--noyshading`                         | When in `--mode terrain`, disables tinting blocks according to y level |
 | `--heightslice <value>`                | When in `--mode height` rounds the values of y coordinates to intervals of the specified value to create a layered topographic look |
-| `--layer`                              | In all modes, renders a single Voxelmap layer (0 = Surface, 1 = Underwater, 2 = Transparent Blocks, 3 = Vegetation) |
+| `--layer`                              | In `terrain` and `height` modes, renders a single Voxelmap layer (0 = Surface, 1 = Underwater, 2 = Transparent Blocks, 3 = Vegetation) |
 
 ### Output Settings
 
@@ -56,3 +56,13 @@ Voxelmap stores its cache data in tiles each corresponding to a 256x256 area (as
 | ---------------- | ------------------------------------------------------------ |
 | `--zoom <value>` | Creates folders with zoomed out versions of the tiles, every 4 tiles in a certain zoom level get merged and shrunk into a single 256x256 tile at the next zoom level |
 | `--stitch`       | Stitches all the produced tiles into a single image, if zoom is used, it will use the highest zoom level |
+
+### Atlas Settings
+
+To generate its terrain map Foxelmap uses a pixel atlas with the colors to be used for each block, by default Foxelmap now comes with a pre-calculated atlas, however it is also possible to generate new ones. To do this, copy the 1.16 Minecraft `.jar` assets directory into the root folder of Foxelmap and run one of the following commands.
+
+| Command      | Description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| `--atlas`    | Uses the minecraft assets/ folder to generate block colors   |
+| `--atlasgen` | Uses the minecraft assets/ folder to generate block colors and outputs them to file (note: this overwrites the default provided one) |
+
