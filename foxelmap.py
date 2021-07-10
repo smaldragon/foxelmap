@@ -161,10 +161,9 @@ def main(argv):
     atlas = None
     light_atlas = None
     biome_atlas = None
+    if generate_atlas:
+        atlas_gen.calculate_atlas()
     if mode == "terrain":
-        print(generate_atlas)
-        if generate_atlas:
-            atlas_gen.calculate_atlas()
         if calculate_atlas:
             atlas = atlas_gen.get_atlas(bedrock)
         else:
