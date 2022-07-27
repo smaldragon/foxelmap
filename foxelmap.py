@@ -48,7 +48,7 @@ def main(argv):
     zoom = 0
 
     try: 
-        opts, args = getopt.getopt(argv,"hx:z:am:w:c:",
+        opts, args = getopt.getopt(argv,"ham:w:c:t:",
             ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading","atlas","atlasgen"]
         )
     except getopt.GetoptError:
@@ -62,8 +62,9 @@ def main(argv):
             print("\t --world <path> - the path to the tiles to be rendered")
             print("")
             print("\t-a --all - renders all tiles")
-            print("\t-x \"x1,x2\" - region x")
-            print("\t-z \"z1,z2\" - region z")
+            print("\t-t \"x,z\" - region x")
+            print("\t--tx \"x1,x2\" - region x")
+            print("\t--tz \"z1,z2\" - region z")
             print("\t-c \"x,z\" - tile at x,z ingame coords")
             print("\t--cx \"x1,x2\" - tiles from x1 to x2 ingame coords")
             print("\t--cz \"z1,z2\" - tiles from z1 to z2 ingame coords")
@@ -83,22 +84,6 @@ def main(argv):
             print("\t--atlasgen - generates an atlas and exports it to palettes/atlas/")
             print("\n")
             sys.exit()
-        elif opt in ("-x"):
-            render_all = False
-            split = arg.split(",")
-            if len(split) == 1:
-                bounds_x = [int(arg),int(arg)]
-            if len(split) == 2:
-                bounds_x = [int(split[0]),int(split[1])]
-                bounds_x.sort()
-        elif opt in ("-z"):
-            render_all = False
-            split = arg.split(",")
-            if len(split) == 1:
-                bounds_z = [int(arg),int(arg)]
-            if len(split) == 2:
-                bounds_z = [int(split[0]),int(split[1])]
-                bounds_z.sort()
         elif opt in ("--radius"):
             if bounds_x == None: bounds_x = [0,0]
             if bounds_z == None: bounds_z = [0,0]
@@ -119,6 +104,9 @@ def main(argv):
             world = arg.split(",")
         elif opt in ("--light"):
             time_of_day = arg
+        #---
+        # Area Selection
+        #--- 
         elif opt in ("-c"):
             split = arg.split(",")
             cx = math.floor(int(split[0])/256)
@@ -137,6 +125,28 @@ def main(argv):
             cz2 = math.floor(int(split[1])/256)
             bounds_z = [cz1,cz2]
             bounds_z.sort()
+       elif opt in ("-t"):
+            split = arg.split(",")
+            cx = math.floor(int(split[0])/256)
+            cz = math.floor(int(split[1])/256)
+            bounds_x = [int(split[0]),int(split[0])]
+            bounds_z = [int(split[1]),int(split[1])]
+       elif opt in ("--tx"):
+            render_all = False
+            split = arg.split(",")
+            if len(split) == 1:
+                bounds_x = [int(arg),int(arg)]
+            if len(split) == 2:
+                bounds_x = [int(split[0]),int(split[1])]
+                bounds_x.sort()
+        elif opt in ("--tz"):
+            render_all = False
+            split = arg.split(",")
+            if len(split) == 1:
+                bounds_z = [int(arg),int(arg)]
+            if len(split) == 2:
+                bounds_z = [int(split[0]),int(split[1])]
+                bounds_z.sort()
         elif opt in ("--bedrock"):
             bedrock = True
         elif opt in ("--zoom"):

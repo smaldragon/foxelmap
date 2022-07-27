@@ -25,8 +25,9 @@ Voxelmap stores its cache data in tiles each corresponding to a 256x256 area (as
 | `-c "x,z"`         | Renders the tile at the specified x,z in-game coordinate     |
 | `--cx "x1,x2"`     | Renders the tiles between the specified x in-game coordinates (inclusive) |
 | `--cz "z1,z2"`     | Renders the tiles between the specified z in-game coordinates (inclusive) |
-| `-x "x1,x2"`       | Renders the tiles between the specified x voxelmap tile coordinates (inclusive) |
-| `-z "x1,x2"`       | Renders the tiles between the specified z voxelmap tile coordinates (inclusive) |
+| `-t "x,z"`         | Renders the tile at the specified x,z voxelmap tile coordinate |
+| `--tx "x1,x2"`     | Renders the tiles between the specified x voxelmap tile coordinates (inclusive) |
+| `--tz "x1,x2"`     | Renders the tiles between the specified z voxelmap tile coordinates (inclusive) |
 | `--radius <value>` | Expands the selected tile area by a specified radius in all directions |
 
 ### Render Modes
