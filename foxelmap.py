@@ -46,9 +46,10 @@ def main(argv):
     time_of_day = "day"
     bedrock = False
     zoom = 0
+    version = 17 
 
     try: 
-        opts, args = getopt.getopt(argv,"ham:w:c:t:",
+        opts, args = getopt.getopt(argv,"ham:w:c:t:v:",
             ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading","atlas","atlasgen"]
         )
     except getopt.GetoptError:
@@ -58,6 +59,8 @@ def main(argv):
         if opt in ('-h','--help'):
             print ("FoxelMap Renderer")
             print (".\\foxelmap.py -x \"-1,1\" -z \"-1,1\"")
+            print("")
+            print("\t -v <version> - the minecraft version to render (17/18/19)")
             print("")
             print("\t --world <path> - the path to the tiles to be rendered")
             print("")
@@ -84,6 +87,8 @@ def main(argv):
             print("\t--atlasgen - generates an atlas and exports it to palettes/atlas/")
             print("\n")
             sys.exit()
+        elif opt in ('-v'):
+            version = int(arg)
         elif opt in ("--radius"):
             if bounds_x == None: bounds_x = [0,0]
             if bounds_z == None: bounds_z = [0,0]
@@ -125,13 +130,13 @@ def main(argv):
             cz2 = math.floor(int(split[1])/256)
             bounds_z = [cz1,cz2]
             bounds_z.sort()
-       elif opt in ("-t"):
+        elif opt in ("-t"):
             split = arg.split(",")
             cx = math.floor(int(split[0])/256)
             cz = math.floor(int(split[1])/256)
             bounds_x = [int(split[0]),int(split[0])]
             bounds_z = [int(split[1]),int(split[1])]
-       elif opt in ("--tx"):
+        elif opt in ("--tx"):
             render_all = False
             split = arg.split(",")
             if len(split) == 1:
@@ -157,6 +162,7 @@ def main(argv):
             config['render_layer'] = int(arg)
         elif opt in ('--noyshading'):
             config['y_shading'] = False
+        
 
     print(world)
 
@@ -170,18 +176,22 @@ def main(argv):
     print(bounds_x,bounds_z)
     atlas = None
     light_atlas = None
-    biome_atlas = None
+    biome_atlas = atlas_gen.get_biome_atlas(v=version)
+    
     if generate_atlas:
-        atlas_gen.calculate_atlas()
+        atlas_gen.calculate_atlas(v=17)
+        atlas_gen.calculate_atlas(v=18)
+        atlas_gen.calculate_atlas(v=19)
     if mode == "terrain":
         if calculate_atlas:
-            atlas = atlas_gen.get_atlas(bedrock)
+            atlas = atlas_gen.get_atlas(be=bedrock,v=version)
         else:
-            atlas = atlas_gen.load_atlas(bedrock)
+            atlas = atlas_gen.load_atlas(be=bedrock,v=version)
+    
+    atlas_gen.tints = biome_atlas
+    
     if mode in ("terrain","light"):
         light_atlas = atlas_gen.get_light_atlas(time_of_day)
-    if mode in ("terrain","biome"):
-        biome_atlas = atlas_gen.get_biome_atlas()
 
     print("bounds is",bounds_x,bounds_z)
     for w in world:
