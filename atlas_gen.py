@@ -111,7 +111,7 @@ def get_model_color(blockname,be = False,variation=""):
     '''
     return pixels
 
-def get_atlas(be = False,v=17):
+def get_atlas(be = False,v = 0):
     global tints
     tints = get_biome_atlas(v)
     atlas = {"minecraft:air": np.zeros((256,4))}

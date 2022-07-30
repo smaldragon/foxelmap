@@ -179,6 +179,7 @@ def main(argv):
     biome_atlas = atlas_gen.get_biome_atlas(v=version)
     
     if generate_atlas:
+        atlas_gen.calculate_atlas(v=16)
         atlas_gen.calculate_atlas(v=17)
         atlas_gen.calculate_atlas(v=18)
         atlas_gen.calculate_atlas(v=19)
