@@ -14,13 +14,21 @@ To render the center regions of your world do `python foxelmap.py --radius 3 --s
 
 Run `python foxelmap.py --help` for a list of all commands and settings or view the tables bellow.
 
+### Setup
+
+Commands that will be run most times
+
+| Command            | Description                                                  |
+| ------------------ | ------------------------------------------------------------ |
+| `--world <path>`   | The path to the folder with the .zip tiles to be rendered, `world/` is the default if no world setting is specified |
+| `--v <16/17/18/19>`   | The Minecraft version this data belongs to, supported values are `16, 17, 18 or 19` |
+
 ### Area Selection
 
 Voxelmap stores its cache data in tiles each corresponding to a 256x256 area (as opposed to the 512x512 of minecraft's region files). Several commands are available for picking which tiles to render with Foxelmap.
 
 | Command            | Description                                                  |
 | ------------------ | ------------------------------------------------------------ |
-| `--world <path>`   | The path to the folder with the .zip tiles to be rendered, `world/` is the default if no world setting is specified |
 | `-a` / `--all`     | Render all tiles in the cache                                |
 | `-c "x,z"`         | Renders the tile at the specified x,z in-game coordinate     |
 | `--cx "x1,x2"`     | Renders the tiles between the specified x in-game coordinates (inclusive) |

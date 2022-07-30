@@ -8,14 +8,47 @@ water_tint    = (63/255, 118/255, 228/255,1.0) #3F76E4
 grass_tint    = (0.0, 0.0, 0.0,1.0) #91BD59
 folliage_tint = (50/255, 171/255, 47/255,1.0) #77AB2F
 
-def get_biome_atlas():
-    image = Image.open("palettes/biome.png").convert('RGBA')
-    biome_atlas = (np.asarray(image)/255)
-    return biome_atlas
-
-
-tints = get_biome_atlas()
-
+def get_biome_atlas(v):
+    # Legacy biome colors for 1.17 and bellow
+    if v <= 17:
+        print("using atlas colors")
+        image = Image.open("palettes/biome.png").convert('RGBA')
+        biome_atlas = (np.asarray(image)/255)
+        return biome_atlas
+    # Modern biome colors for 1.18 and above
+    else:
+        print("using text colors, version",v)
+        total_grass =    [[1,1,1,1]]*256
+        total_folliage = [[1,1,1,1]]*256
+        total_water_je = [[1,1,1,1]]*256
+        total_water_be = [[1,1,1,1]]*256
+        total_biomes   = [[1,1,1,1]]*256
+        i = 0
+        with open("palettes/biomes") as f:
+            lines = f.readlines()[1:]
+            for line in lines:
+                values = line.split(" ")
+                version = int(values[0])
+                if version <= v:
+                    def hex_to_fcolor(hex):
+                        r = int(hex[1:3],16) / 255
+                        g = int(hex[3:5],16) / 255
+                        b = int(hex[5:7],16) / 255
+                        a = 1.0
+                        return [r,g,b,a].copy()
+                    total_grass[i] = hex_to_fcolor(values[1])
+                    total_folliage[i] = hex_to_fcolor(values[2])
+                    total_water_je[i] = hex_to_fcolor(values[3])
+                    total_water_be[i] = hex_to_fcolor(values[4])
+                    total_biomes[i] = hex_to_fcolor(values[5])
+                    
+                    biome   = values[6].strip("\n")
+                    i+=1
+        biome_atlas = np.array([total_grass,total_folliage,total_water_je,total_water_be,total_biomes],dtype=np.float)
+        im = Image.fromarray((biome_atlas * 255).astype(np.uint8))
+        return biome_atlas  
+        
+tints = None
 
 def get_model_color(blockname,be = False,variation=""):
     pix = (0,0,0,0)
@@ -78,7 +111,9 @@ def get_model_color(blockname,be = False,variation=""):
     '''
     return pixels
 
-def get_atlas(be = False):
+def get_atlas(be = False,v = 0):
+    global tints
+    tints = get_biome_atlas(v)
     atlas = {"minecraft:air": np.zeros((256,4))}
     #print(atlas["minecraft:air"].shape)
 
@@ -145,10 +180,13 @@ def get_light_atlas(light):
     #print(light_atlas)
     return light_atlas
 
-def calculate_atlas():
+def calculate_atlas(v):
     print("generating atlas")
-    atlas = get_atlas()
-    atlas_b = get_atlas(True)
+    global tints
+    tints = get_biome_atlas(v)
+    
+    atlas = get_atlas(be=False,v=v)
+    atlas_b = get_atlas(be=True,v=v)
 
     img_d =   np.zeros((len(atlas.keys()),256,4),np.uint8)
     img_db = np.zeros((len(atlas.keys()),256,4),np.uint8)
@@ -159,17 +197,17 @@ def calculate_atlas():
         img_d[i] = atlas[k]
         img_db[i] = atlas_b[k]
         i += 1
-    Image.fromarray(img_d).save('palettes/atlas/atlas.png')
-    Image.fromarray(img_db).save('palettes/atlas/atlas_b.png')
+    Image.fromarray(img_d).save(f'palettes/atlas/atlas_{v}.png')
+    Image.fromarray(img_db).save(f'palettes/atlas/atlas_{v}b.png')
     with open('palettes/atlas/key.txt','w') as f:
         f.write('\n'.join(keys))
 
-def load_atlas(be=False,p='palettes/atlas'):
+def load_atlas(be=False,p='palettes/atlas',v=0):
     atlas = {}
     if be:
-        img = Image.open('{}/atlas_b.png'.format(p))
+        img = Image.open('{}/atlas_{}b.png'.format(p,v))
     else:
-        img = Image.open('{}/atlas.png'.format(p))
+        img = Image.open('{}/atlas_{}.png'.format(p,v))
     img_np = np.asarray(img)
     keys = []
     with open('{}/key.txt'.format(p),'r') as f:
