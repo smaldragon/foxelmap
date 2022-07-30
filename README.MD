@@ -1,12 +1,14 @@
 # FoxelMap
 
-FoxelMap is a (as of now crude) python command-line offline 1.16.5 VoxelMap renderer that attempts to provide a customizable offline option for rendering voxelmap cache files, as well as adding extra modes and settings:
+FoxelMap is a (as of now crude) python command-line offline 1.16.5 to 1.19 VoxelMap renderer that attempts to provide a customizable offline option for rendering voxelmap cache files, as well as adding extra modes and settings:
 
 ![example](debug_render_tile.png)
 
 As of now it supports most but not all blockstates (namely waterlogged blocks). It also does not match voxelmap output 1:1 (and likely never will).
 
 ## Usage
+
+**FoxelMap 0.1** - Back from Hiatus
 
 Copy the VoxelMap cache `.zip` files of the world and dimension you wish to render into a new folder named `world`inside the Foxelmap directory
 

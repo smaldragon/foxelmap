@@ -25,7 +25,6 @@ except:
 # Biome tints are currently hard-coded (using values from minecraft wiki)
 # No mod support (sorry)
 # No resource pack support
-# Only supports latest voxelmap version/format (and only tested with minecraft 1.16.5)
 # Block slopes breaks across region edges
 # Different toggles for terrain/slope/water not yet avaliable
 # Only supports/tested with the overworld dimension
@@ -33,6 +32,8 @@ except:
 # Send a single variable for atlases and modes
 
 def main(argv):
+    intro = "FoxelMap 0.1 | back from hiatus \n foxelmap.py -x \"x1,x2\" -z \"z1,z2\""
+
     calculate_atlas = False
     generate_atlas = False
     bounds_x = None
@@ -46,19 +47,18 @@ def main(argv):
     time_of_day = "day"
     bedrock = False
     zoom = 0
-    version = 17 
+    version = 19
 
     try: 
         opts, args = getopt.getopt(argv,"ham:w:c:t:v:",
             ["all","stitch","radius=","mode=","world=","light=","bedrock","help","cx=","cz=","zoom=","heightslice=","layer=","noyshading","atlas","atlasgen"]
         )
     except getopt.GetoptError:
-        print("foxelmap.py -x \"x1,x2\" -z \"z1,z2\"")
+        print(intro)
         sys.exit(2)
     for opt,arg in opts:
         if opt in ('-h','--help'):
-            print ("FoxelMap Renderer")
-            print (".\\foxelmap.py -x \"-1,1\" -z \"-1,1\"")
+            print (intro)
             print("")
             print("\t -v <version> - the minecraft version to render (17/18/19)")
             print("")
